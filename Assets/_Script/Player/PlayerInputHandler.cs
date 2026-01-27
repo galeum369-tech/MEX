@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputHandler : MonoBehaviour
 {
-    public event Action<Vector2>> OnMove;
+    public event Action<Vector2> OnMove;
     public event Action OnAttack;
     public event Action OnSupportSkill;   // 우클릭
     public event Action OnDash;           // Shift
