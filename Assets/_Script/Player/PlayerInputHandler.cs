@@ -7,10 +7,10 @@ public class PlayerInputHandler : MonoBehaviour
     public event Action<Vector2> OnMove;
     public event Action OnAttack;
     public event Action OnSupportSkill;   // 우클릭
-    public event Action OnDash;           // Shift
+    public event Action<bool> OnDash;     // Shift
     public event Action OnDodge;          // Space
-    public event Action OnHeal;            // E
-    public event Action OnInteract;        // F
+    public event Action OnHeal;           // E
+    public event Action OnInteract;       // F
 
     PlayerCon input;
 
@@ -57,7 +57,7 @@ public class PlayerInputHandler : MonoBehaviour
     }
     void HandleDash(InputAction.CallbackContext context)
     {
-        OnDash?.Invoke();
+        OnDash?.Invoke(context.ReadValueAsButton());
     }
     void HandleDodge(InputAction.CallbackContext context)
     {
