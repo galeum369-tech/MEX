@@ -379,9 +379,9 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""down"",
-                    ""id"": ""602870d6-b673-4212-aed9-ffa5aa1ecb28"",
-                    ""path"": ""<Keyboard>/s"",
+                    ""name"": ""right"",
+                    ""id"": ""e77ea8c2-f0f9-48a5-883c-4d14276d9731"",
+                    ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
@@ -390,9 +390,9 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""right"",
-                    ""id"": ""e77ea8c2-f0f9-48a5-883c-4d14276d9731"",
-                    ""path"": ""<Keyboard>/d"",
+                    ""name"": ""left"",
+                    ""id"": ""9f5e7f0f-6a63-4564-af5a-884623966eb7"",
+                    ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
