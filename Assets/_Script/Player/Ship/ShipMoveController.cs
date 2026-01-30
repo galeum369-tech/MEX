@@ -24,7 +24,7 @@ public class ShipMoveController
     {
         if (direction.sqrMagnitude > 0.01f)
         {
-            float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
             float angle = Mathf.MoveTowardsAngle(rb.rotation, targetAngle, turnSpeed * Time.fixedDeltaTime);
             rb.MoveRotation(angle);
         }

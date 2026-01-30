@@ -24,6 +24,15 @@ public class HubPlayer : MonoBehaviour
         //ac = new Animcontroller(GetComponent<Animator>());
     }
 
+    private void Start()
+    {
+        // true = SideView (인간/메카닉), false = TopView (수송선)
+        if (inputHandler != null)
+        {
+            inputHandler.SetControlMode(true); // 허브는 사이드뷰
+        }
+    }
+
     #region 입력 이벤트 구독/해제 허브에는 이동, 점프, 상호작용정도만 필요
     private void OnEnable()
     {

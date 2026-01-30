@@ -1,27 +1,16 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(PlayerInputHandler))]
 public class ShipPlayer : MonoBehaviour
 {
-    [Header("Input")]
+    ShipData shipData;
+
+
     [SerializeField] private PlayerInputHandler inputHandler;
 
     private ShipMoveController mc;
     private Rigidbody2D rb;
-
-    [System.Serializable]
-    public class ShipStat
-    {
-        [Header("기동성")]
-        public float moveSpeed = 10f;       // 최고 속도
-        public float boostMultiplier = 1.5f;// 부스터 배율
-        [Range(1f, 50f)]
-        public float acceleration = 5f;     // 가속력 (반응성) - 5 추천
-        public float turnSpeed = 200f;      // 선회력 - 200 추천
-    }
-
-    [Header("Ship Settings")]
-    public ShipStat stat; // 인스펙터에서 수정 가능
 
     // 상태 변수
     private Vector2 currentInput;
@@ -40,6 +29,24 @@ public class ShipPlayer : MonoBehaviour
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
     }
 
+    private void Start()
+    {
+        // 게임 매니저에서 플레이어 데이터 가져오기
+        if (GameManager.instance != null)
+        {
+            shipData = GameManager.instance.playerData.shipData;
+        }
+        else
+        {
+            Debug.LogWarning("GameManager가 없음 임시 데이터 사용");
+            shipData = new ShipData(); // 기본값 사용
+        }
+
+        //인풋 핸들러에게 탑뷰임을 알림
+        inputHandler.SetControlMode(false); // false = 탑뷰
+    }
+
+
     // (OnEnable, OnDisable은 이전과 동일)
     private void OnEnable()
     {
@@ -54,13 +61,15 @@ public class ShipPlayer : MonoBehaviour
 
     private void FixedUpdate()
     {
-        float finalSpeed = stat.moveSpeed * (isBoosting ? stat.boostMultiplier : 1f);
+        if(shipData == null) return; // 데이터 없으면 무시
+
+        float finalSpeed = shipData.moveSpeed * (isBoosting ? shipData.boostMultiplier : 1f);
 
         // 가속도(acceleration) 파라미터 추가됨
-        mc.Move(currentInput, finalSpeed, stat.acceleration);
+        mc.Move(currentInput, finalSpeed, shipData.acceleration);
 
         // 회전
-        mc.Rotate(currentInput, stat.turnSpeed);
+        mc.Rotate(currentInput, shipData.turnSpeed);
     }
 
     private void HandleMove(Vector2 input) => currentInput = input;
