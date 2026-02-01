@@ -41,5 +41,23 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: ArmB
+    uniqueID: 3985181315
+    locked: 0
+  - name: LegB
+    uniqueID: 2187788425
+    locked: 0
+  - name: Body
+    uniqueID: 1643322515
+    locked: 0
+  - name: LegF
+    uniqueID: 675852561
+    locked: 0
+  - name: Weapon
+    uniqueID: 2612038075
+    locked: 0
+  - name: ArmF
+    uniqueID: 3510021747
+    locked: 0
   m_RenderingLayers:
   - Default
