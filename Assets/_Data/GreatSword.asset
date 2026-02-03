@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0161ccaa90adfde46a68f6042f0b6439, type: 3}
-  m_Name: NewMeleeWeapon
+  m_Name: GreatSword
   m_EditorClassIdentifier: 
   weaponID: 0
-  weaponName: 
-  description: 
-  icon: {fileID: 0}
+  weaponName: "\uB300\uAC80"
+  description: "\uBB34\uAC70\uC6B4 \uB300\uAC80"
+  icon: {fileID: 21300000, guid: e75f0accb12efda4988292fa7299e50a, type: 3}
   damage: 20
   cooldown: 0.5
   knockbackForce: 5

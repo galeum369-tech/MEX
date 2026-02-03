@@ -154,6 +154,42 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UseItem01"",
+                    ""type"": ""Button"",
+                    ""id"": ""8967b2ad-b90a-4b43-837d-a200d1324318"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UseItem02"",
+                    ""type"": ""Button"",
+                    ""id"": ""be9d293c-77fd-46f7-ab7c-06e18a01279b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UseItem03"",
+                    ""type"": ""Button"",
+                    ""id"": ""d8510756-99a1-4c73-a97d-6597a7142a30"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UseItem04"",
+                    ""type"": ""Button"",
+                    ""id"": ""a434a314-358a-465f-8dcb-270283eb25a3"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -277,6 +313,50 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""10788092-1f8c-4b59-b10b-28447881e969"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UseItem01"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0fe51f2f-8327-40d4-aed2-c6bfeed314e1"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UseItem02"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1da343db-1f77-4b52-88ce-3b865b803f71"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UseItem03"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""47e2e4f5-0260-40e0-8257-6583ac535728"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UseItem04"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -360,6 +440,42 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
                     ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""46081354-d524-4f94-b193-7de843c04865"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UseItem01"",
+                    ""type"": ""Button"",
+                    ""id"": ""d0d9dd80-034c-42e1-9c97-9128eb74afb9"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UseItem02"",
+                    ""type"": ""Button"",
+                    ""id"": ""b79931eb-13e6-484f-85b6-08df444a76b4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UseItem03"",
+                    ""type"": ""Button"",
+                    ""id"": ""d0c238f2-1c51-4e2e-93eb-135b3e4aae5d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UseItem04"",
+                    ""type"": ""Button"",
+                    ""id"": ""e4f1c93b-bb3c-44a4-bfa6-aeaf428e5c4c"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -468,6 +584,72 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""e93552ff-89e0-42ef-a21b-a6679848edaf"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UseItem01"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d5af3ac7-fc1a-4137-b7f6-ec14deaa97e6"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UseItem02"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7159f9d1-77f7-4e63-83ac-fc9c6ff39a66"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UseItem03"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""44c7f5f6-ebaa-495b-a4c7-7820808d36b7"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UseItem04"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8f4dc555-990a-4e3f-828d-671db6f58c32"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UseItem04"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4d128bc4-2ff1-49d8-9b0a-f9e1ae0fbb27"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UseItem04"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""f10f5290-d84a-4f3d-93e7-fb410c85b3e1"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
@@ -502,6 +684,10 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
         m_PlayerTop_Dodge = m_PlayerTop.FindAction("Dodge", throwIfNotFound: true);
         m_PlayerTop_Heal = m_PlayerTop.FindAction("Heal", throwIfNotFound: true);
         m_PlayerTop_Interact = m_PlayerTop.FindAction("Interact", throwIfNotFound: true);
+        m_PlayerTop_UseItem01 = m_PlayerTop.FindAction("UseItem01", throwIfNotFound: true);
+        m_PlayerTop_UseItem02 = m_PlayerTop.FindAction("UseItem02", throwIfNotFound: true);
+        m_PlayerTop_UseItem03 = m_PlayerTop.FindAction("UseItem03", throwIfNotFound: true);
+        m_PlayerTop_UseItem04 = m_PlayerTop.FindAction("UseItem04", throwIfNotFound: true);
         // PlayerSide
         m_PlayerSide = asset.FindActionMap("PlayerSide", throwIfNotFound: true);
         m_PlayerSide_Move = m_PlayerSide.FindAction("Move", throwIfNotFound: true);
@@ -513,6 +699,10 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
         m_PlayerSide_Dodge = m_PlayerSide.FindAction("Dodge", throwIfNotFound: true);
         m_PlayerSide_Heal = m_PlayerSide.FindAction("Heal", throwIfNotFound: true);
         m_PlayerSide_Interact = m_PlayerSide.FindAction("Interact", throwIfNotFound: true);
+        m_PlayerSide_UseItem01 = m_PlayerSide.FindAction("UseItem01", throwIfNotFound: true);
+        m_PlayerSide_UseItem02 = m_PlayerSide.FindAction("UseItem02", throwIfNotFound: true);
+        m_PlayerSide_UseItem03 = m_PlayerSide.FindAction("UseItem03", throwIfNotFound: true);
+        m_PlayerSide_UseItem04 = m_PlayerSide.FindAction("UseItem04", throwIfNotFound: true);
     }
 
     ~@PlayerInput_Actions()
@@ -601,6 +791,10 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerTop_Dodge;
     private readonly InputAction m_PlayerTop_Heal;
     private readonly InputAction m_PlayerTop_Interact;
+    private readonly InputAction m_PlayerTop_UseItem01;
+    private readonly InputAction m_PlayerTop_UseItem02;
+    private readonly InputAction m_PlayerTop_UseItem03;
+    private readonly InputAction m_PlayerTop_UseItem04;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerTop".
     /// </summary>
@@ -640,6 +834,22 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerTop/Interact".
         /// </summary>
         public InputAction @Interact => m_Wrapper.m_PlayerTop_Interact;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerTop/UseItem01".
+        /// </summary>
+        public InputAction @UseItem01 => m_Wrapper.m_PlayerTop_UseItem01;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerTop/UseItem02".
+        /// </summary>
+        public InputAction @UseItem02 => m_Wrapper.m_PlayerTop_UseItem02;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerTop/UseItem03".
+        /// </summary>
+        public InputAction @UseItem03 => m_Wrapper.m_PlayerTop_UseItem03;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerTop/UseItem04".
+        /// </summary>
+        public InputAction @UseItem04 => m_Wrapper.m_PlayerTop_UseItem04;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -687,6 +897,18 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @UseItem01.started += instance.OnUseItem01;
+            @UseItem01.performed += instance.OnUseItem01;
+            @UseItem01.canceled += instance.OnUseItem01;
+            @UseItem02.started += instance.OnUseItem02;
+            @UseItem02.performed += instance.OnUseItem02;
+            @UseItem02.canceled += instance.OnUseItem02;
+            @UseItem03.started += instance.OnUseItem03;
+            @UseItem03.performed += instance.OnUseItem03;
+            @UseItem03.canceled += instance.OnUseItem03;
+            @UseItem04.started += instance.OnUseItem04;
+            @UseItem04.performed += instance.OnUseItem04;
+            @UseItem04.canceled += instance.OnUseItem04;
         }
 
         /// <summary>
@@ -719,6 +941,18 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @UseItem01.started -= instance.OnUseItem01;
+            @UseItem01.performed -= instance.OnUseItem01;
+            @UseItem01.canceled -= instance.OnUseItem01;
+            @UseItem02.started -= instance.OnUseItem02;
+            @UseItem02.performed -= instance.OnUseItem02;
+            @UseItem02.canceled -= instance.OnUseItem02;
+            @UseItem03.started -= instance.OnUseItem03;
+            @UseItem03.performed -= instance.OnUseItem03;
+            @UseItem03.canceled -= instance.OnUseItem03;
+            @UseItem04.started -= instance.OnUseItem04;
+            @UseItem04.performed -= instance.OnUseItem04;
+            @UseItem04.canceled -= instance.OnUseItem04;
         }
 
         /// <summary>
@@ -765,6 +999,10 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerSide_Dodge;
     private readonly InputAction m_PlayerSide_Heal;
     private readonly InputAction m_PlayerSide_Interact;
+    private readonly InputAction m_PlayerSide_UseItem01;
+    private readonly InputAction m_PlayerSide_UseItem02;
+    private readonly InputAction m_PlayerSide_UseItem03;
+    private readonly InputAction m_PlayerSide_UseItem04;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerSide".
     /// </summary>
@@ -812,6 +1050,22 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerSide/Interact".
         /// </summary>
         public InputAction @Interact => m_Wrapper.m_PlayerSide_Interact;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerSide/UseItem01".
+        /// </summary>
+        public InputAction @UseItem01 => m_Wrapper.m_PlayerSide_UseItem01;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerSide/UseItem02".
+        /// </summary>
+        public InputAction @UseItem02 => m_Wrapper.m_PlayerSide_UseItem02;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerSide/UseItem03".
+        /// </summary>
+        public InputAction @UseItem03 => m_Wrapper.m_PlayerSide_UseItem03;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerSide/UseItem04".
+        /// </summary>
+        public InputAction @UseItem04 => m_Wrapper.m_PlayerSide_UseItem04;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -865,6 +1119,18 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @UseItem01.started += instance.OnUseItem01;
+            @UseItem01.performed += instance.OnUseItem01;
+            @UseItem01.canceled += instance.OnUseItem01;
+            @UseItem02.started += instance.OnUseItem02;
+            @UseItem02.performed += instance.OnUseItem02;
+            @UseItem02.canceled += instance.OnUseItem02;
+            @UseItem03.started += instance.OnUseItem03;
+            @UseItem03.performed += instance.OnUseItem03;
+            @UseItem03.canceled += instance.OnUseItem03;
+            @UseItem04.started += instance.OnUseItem04;
+            @UseItem04.performed += instance.OnUseItem04;
+            @UseItem04.canceled += instance.OnUseItem04;
         }
 
         /// <summary>
@@ -903,6 +1169,18 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @UseItem01.started -= instance.OnUseItem01;
+            @UseItem01.performed -= instance.OnUseItem01;
+            @UseItem01.canceled -= instance.OnUseItem01;
+            @UseItem02.started -= instance.OnUseItem02;
+            @UseItem02.performed -= instance.OnUseItem02;
+            @UseItem02.canceled -= instance.OnUseItem02;
+            @UseItem03.started -= instance.OnUseItem03;
+            @UseItem03.performed -= instance.OnUseItem03;
+            @UseItem03.canceled -= instance.OnUseItem03;
+            @UseItem04.started -= instance.OnUseItem04;
+            @UseItem04.performed -= instance.OnUseItem04;
+            @UseItem04.canceled -= instance.OnUseItem04;
         }
 
         /// <summary>
@@ -992,6 +1270,34 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnInteract(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "UseItem01" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnUseItem01(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "UseItem02" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnUseItem02(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "UseItem03" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnUseItem03(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "UseItem04" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnUseItem04(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PlayerSide" which allows adding and removing callbacks.
@@ -1063,5 +1369,33 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnInteract(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "UseItem01" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnUseItem01(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "UseItem02" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnUseItem02(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "UseItem03" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnUseItem03(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "UseItem04" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnUseItem04(InputAction.CallbackContext context);
     }
 }

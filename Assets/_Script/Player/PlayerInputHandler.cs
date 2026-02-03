@@ -26,6 +26,12 @@ public class PlayerInputHandler : MonoBehaviour
     public event Action OnInteract;
     public event Action OnHeal;
 
+    // 공통 아이템 사용
+    public event Action OnUseItem01;
+    public event Action OnUseItem02;
+    public event Action OnUseItem03;
+    public event Action OnUseItem04;
+
     private void Awake()
     {
         // [핵심 2] 스크립트가 깨어날 때, 키 세팅(인스턴스)을 직접 생성함!
@@ -58,9 +64,22 @@ public class PlayerInputHandler : MonoBehaviour
         // 여기선 편의상 PlayerSide 기준으로 예시를 들게. 
         // 실제로는 두 맵에 다 'Attack'이 있으면 둘 다 연결해줘야 함.
         input.PlayerSide.Attack.performed += AttackCtx;
+        input.PlayerTop.Attack.performed += AttackCtx;
         input.PlayerSide.SupportSkill.performed += SkillCtx;
+        input.PlayerTop.SupportSkill.performed += SkillCtx;
         input.PlayerSide.Interact.performed += InteractCtx;
+        input.PlayerTop.Interact.performed += InteractCtx;
         // input.PlayerSide.Heal.performed += HealCtx; // (액션 있으면 주석 해제)
+        // input.PlayerTop.Heal.performed += HealCtx;  // (액션 있으면 주석 해제)
+        // input.PlayerSide.UseItem01.performed += UseItem01Ctx;
+        // input.PlayerTop.UseItem01.performed += UseItem01Ctx;
+        // input.PlayerSide.UseItem02.performed += UseItem02Ctx;
+        // input.PlayerTop.UseItem02.performed += UseItem02Ctx;
+        // input.PlayerSide.UseItem03.performed += UseItem03Ctx;
+        // input.PlayerTop.UseItem03.performed += UseItem03Ctx;
+        // input.PlayerSide.UseItem04.performed += UseItem04Ctx;
+        // input.PlayerTop.UseItem04.performed += UseItem04Ctx;
+
 
         // 중요: 기본적으로 시작할 때는 SideView 맵을 켜둔다.
         input.PlayerSide.Enable();
@@ -74,11 +93,44 @@ public class PlayerInputHandler : MonoBehaviour
         input.Disable();
 
         // 하지만 이벤트 구독 해제(-=)는 정석대로 해주는 게 좋음
+        // 1. PlayerSide 연결
         input.PlayerSide.Move.performed -= MoveCtx;
         input.PlayerSide.Move.canceled -= MoveCtx;
         input.PlayerSide.Jump.performed -= JumpCtx;
-        // ... (나머지도 위와 동일하게 -= 처리) ...
-        // 코드가 너무 길어지니 생략했지만, OnEnable에 있는 거 그대로 -= 하면 됨.
+        input.PlayerSide.FastFall.performed -= FastFallCtx;
+        input.PlayerSide.FastFall.canceled -= FastFallCtx;
+        input.PlayerSide.Dash.performed -= DashCtx;
+        input.PlayerSide.Dash.canceled -= DashCtx;
+        input.PlayerSide.Dodge.performed -= DodgeCtx;
+
+        // 2. PlayerTop 연결
+        input.PlayerTop.Move.performed -= ShipMoveCtx;
+        input.PlayerTop.Move.canceled -= ShipMoveCtx;
+        input.PlayerTop.Dash.performed -= BoostCtx;   // 이름 달라도 연결 쉬움
+        input.PlayerTop.Dash.canceled -= BoostCtx;
+        input.PlayerTop.Dodge.performed -= EvasionCtx;
+
+        // 3. 공통 연결 (이름 같아도 각각 명시적으로 연결해주는 게 안전함)
+        // (PlayerSide, PlayerTop 둘 다 같은 이름의 Action이 있다면 둘 다 연결)
+        // 여기선 편의상 PlayerSide 기준으로 예시를 들게. 
+        // 실제로는 두 맵에 다 'Attack'이 있으면 둘 다 연결해줘야 함.
+        input.PlayerSide.Attack.performed -= AttackCtx;
+        input.PlayerTop.Attack.performed -= AttackCtx;
+        input.PlayerSide.SupportSkill.performed -= SkillCtx;
+        input.PlayerTop.SupportSkill.performed -= SkillCtx;
+        input.PlayerSide.Interact.performed -= InteractCtx;
+        input.PlayerTop.Interact.performed -= InteractCtx;
+        // input.PlayerSide.Heal.performed -= HealCtx; // (액션 있으면 주석 해제)
+        // input.PlayerTop.Heal.performed -= HealCtx;  // (액션 있으면 주석 해제)
+        // input.PlayerSide.UseItem01.performed -= UseItem01Ctx;
+        // input.PlayerTop.UseItem01.performed -= UseItem01Ctx;
+        // input.PlayerSide.UseItem02.performed -= UseItem02Ctx;
+        // input.PlayerTop.UseItem02.performed -= UseItem02Ctx;
+        // input.PlayerSide.UseItem03.performed -= UseItem03Ctx;
+        // input.PlayerTop.UseItem03.performed -= UseItem03Ctx;
+        // input.PlayerSide.UseItem04.performed -= UseItem04Ctx;
+        // input.PlayerTop.UseItem04.performed -= UseItem04Ctx;
+
     }
 
     // 씬 전환 시 호출 (GameManager에서)
@@ -115,5 +167,9 @@ public class PlayerInputHandler : MonoBehaviour
     private void SkillCtx(InputAction.CallbackContext ctx) { if (ctx.performed) OnSkill?.Invoke(); }
     private void InteractCtx(InputAction.CallbackContext ctx) { if (ctx.performed) OnInteract?.Invoke(); }
     // private void HealCtx(InputAction.CallbackContext ctx) { if (ctx.performed) OnHeal?.Invoke(); }
+    // private void UseItem01Ctx(InputAction.CallbackContext ctx) { if (ctx.performed) OnUseItem01?.Invoke(); }
+    // private void UseItem02Ctx(InputAction.CallbackContext ctx) { if (ctx.performed) OnUseItem02?.Invoke(); }
+    // private void UseItem03Ctx(InputAction.CallbackContext ctx) { if (ctx.performed) OnUseItem03?.Invoke(); }
+    // private void UseItem04Ctx(InputAction.CallbackContext ctx) { if (ctx.performed) OnUseItem04?.Invoke(); }
     #endregion
 }
