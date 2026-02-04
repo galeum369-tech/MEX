@@ -90,7 +90,7 @@ public class PlayerInputHandler : MonoBehaviour
     {
         // [핵심 4] 연결 해제도 깔끔하게
         // (여기선 맵 전체를 Disable 해버리면 더 확실함)
-        input.Disable();
+        //input.Disable();
 
         // 하지만 이벤트 구독 해제(-=)는 정석대로 해주는 게 좋음
         // 1. PlayerSide 연결
