@@ -48,10 +48,14 @@ MonoBehaviour:
     mechData:
       maxHP: 100
       currentHP: 100
-      attackPower: 10
-      defense: 5
       maxGauge: 100
       currentGauge: 0
+      moveSpeed: 2
+      dashSpeed: 8
+      jumpPower: 18
+      fastFallSpeed: 30
+      dodgeCooldown: 1
+      attackDelay: 0.5
       equippedMeleeWeaponID: 0
     shipData:
       maxHP: 150
@@ -59,6 +63,8 @@ MonoBehaviour:
       attackPower: 8
       moveSpeed: 5
       boostMultiplier: 2
+      acceleration: 5
+      turnSpeed: 200
       maxGauge: 100
       currentGauge: 0
     inventoryData:
