@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections; // Coroutine 사용을 위해 필요
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(PlayerInputHandler))]
@@ -9,17 +9,16 @@ public class MechPlayer : MonoBehaviour
     // [컴포넌트 및 레퍼런스]
     // ==================================================================================
     private PlayerInputHandler inputHandler;
-    private MecMoveController mc;   // 물리 이동 처리
-    private MechAnimController ac;  // 애니메이션 처리
-    //private MechEffectController ec; // 이펙트 처리 (옵션)
+    private MecMoveController mc;
+    private MechAnimController ac;
 
     private Rigidbody2D rb;
     private Animator anim;
     private MechData mechData;
 
     [Header("Weapon System")]
-    [SerializeField] private WeaponHitbox equippedHitbox;     // 실제 무기 오브젝트 (Collider 포함)
-    [SerializeField] private MeleeWeaponData currentWeaponData; // 데미지 등 데이터
+    [SerializeField] private WeaponHitbox equippedHitbox;
+    [SerializeField] private MeleeWeaponData currentWeaponData;
 
     [Header("Ground Check")]
     [SerializeField] private Transform groundCheckPos;
@@ -30,33 +29,33 @@ public class MechPlayer : MonoBehaviour
     // [스킬 및 액션 설정]
     // ==================================================================================
     [Header("Plunge Attack (낙하 공격)")]
-    [SerializeField] private float plungeSpeed = 30f;     // 낙하 속도
-    [SerializeField] private float plungeDamage = 50f;    // 착지 데미지
-    [SerializeField] private float plungeRadius = 3.5f;   // 충격파 범위
-    [SerializeField] private LayerMask enemyLayer;        // 데미지 대상 레이어
+    [SerializeField] private float plungeSpeed = 30f;
+    [SerializeField] private float plungeDamage = 50f;
+    [SerializeField] private float plungeRadius = 3.5f;
+    [SerializeField] private LayerMask enemyLayer;
 
     [Header("Dodge (회피)")]
-    [SerializeField] private float dodgeSpeed = 15f;      // 회피 이동 속도
-    [SerializeField] private float dodgeDuration = 0.4f;  // 회피 지속 시간
-    [SerializeField] private float dodgeCooldown = 0.8f;  // 쿨타임
+    [SerializeField] private float dodgeSpeed = 15f;
+    [SerializeField] private float dodgeDuration = 0.4f;
+    [SerializeField] private float dodgeCooldown = 0.8f;
 
     // ==================================================================================
     // [상태 변수 (State Flags)]
     // ==================================================================================
-    // 입력 상태
     private Vector2 currentInput;
-    private bool isDownPressed;    // S키(아래) 입력 중인가?
+    private bool isDownPressed;
 
-    // 물리 상태
     private bool isGrounded;
-    private bool wasGrounded;      // 착지 순간 감지용
+    private bool wasGrounded;
 
-    // 행동 상태
     private bool isDashing;
     private bool isAttacking;
-    private bool isPlunging;       // 낙하 공격 중인가?
+    private bool isPlunging;
     private bool isDodging;
     private bool canDodge = true;
+
+    // [★추가됨] 안전장치 코루틴 저장용 변수
+    private Coroutine failsafeCoroutine;
 
     // ==================================================================================
     // [초기화 및 생명주기]
@@ -67,12 +66,9 @@ public class MechPlayer : MonoBehaviour
         anim = GetComponent<Animator>();
         inputHandler = GetComponent<PlayerInputHandler>();
 
-        // 컨트롤러 클래스 초기화
         mc = new MecMoveController(rb);
         ac = new MechAnimController(anim);
-       // ec = GetComponent<MechEffectController>(); // 같은 객체에 있다고 가정 (없으면 null 처리됨)
 
-        // 물리 엔진 설정
         rb.gravityScale = 4f;
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         rb.freezeRotation = true;
@@ -80,7 +76,6 @@ public class MechPlayer : MonoBehaviour
 
     private void Start()
     {
-        // 데이터 매니저에서 스탯 가져오기 (없으면 기본값)
         if (GameManager.instance != null)
             mechData = GameManager.instance.playerData.mechData;
         else
@@ -95,8 +90,8 @@ public class MechPlayer : MonoBehaviour
         inputHandler.OnJump += HandleJump;
         inputHandler.OnDash += HandleDash;
         inputHandler.OnAttack += HandleAttack;
-        inputHandler.OnFastFall += HandleDownInput; // S키 입력
-        inputHandler.OnDodge += HandleDodge;        // 회피 입력
+        inputHandler.OnFastFall += HandleDownInput;
+        inputHandler.OnDodge += HandleDodge;
     }
 
     private void OnDisable()
@@ -116,35 +111,31 @@ public class MechPlayer : MonoBehaviour
     {
         CheckGround();
 
-        // 1. [착지 로직] 공중 -> 땅 닿는 순간
+        // 1. [착지 로직]
         if (!wasGrounded && isGrounded)
         {
             if (isPlunging)
             {
-                OnPlungeLand(); // 낙하 공격 착지 (데미지 + 이펙트)
+                OnPlungeLand();
             }
-            else if (rb.linearVelocity.y < -10f) // 일반 고공 낙하
+            else if (rb.linearVelocity.y < -10f)
             {
-                ac.PlayLand();       // 착지 모션
-               // if (ec) ec.PlayLandEffect();
+                ac.PlayLand();
             }
         }
-        wasGrounded = isGrounded; // 상태 저장
+        wasGrounded = isGrounded;
 
-        // 2. [행동 제한] 공격, 찍기, 회피 중엔 일반 이동 불가
+        // 2. [행동 제한] 
         if (isAttacking || isPlunging || isDodging)
         {
             if (isPlunging && !isGrounded)
             {
-                // 낙하 공격 중엔 수직 가속 유지 (공중 멈춤 방지)
                 rb.linearVelocity = new Vector2(0, -plungeSpeed);
             }
             else if (isAttacking && !isDodging)
             {
-                // 지상 공격 중엔 제자리 정지 (미끄러짐 방지)
                 mc.Stop();
             }
-            // 회피(Dodge)는 코루틴에서 속도를 제어하므로 건드리지 않음
             return;
         }
 
@@ -160,7 +151,7 @@ public class MechPlayer : MonoBehaviour
             mc.Stop();
         }
 
-        // 4. [일반 빠른 하강] (낙하 공격 아닐 때만)
+        // 4. [일반 빠른 하강]
         if (isDownPressed && !isGrounded && !isPlunging)
         {
             mc.FastFall(mechData.fastFallSpeed);
@@ -170,13 +161,40 @@ public class MechPlayer : MonoBehaviour
         UpdateAnimationState();
     }
 
+    // [★추가] 입력 끊김 방지용 타이머 변수
+    private float moveStopTimer = 0f;
+    private const float STOP_DELAY = 0.1f; // 0.1초 정도는 입력 없어도 봐줌
+
     private void UpdateAnimationState()
     {
-        // 이동: 입력 있음 + 회피 중 아님
-        bool isMoving = Mathf.Abs(currentInput.x) > 0.01f;
-        ac.PlayMove(isMoving && !isDodging);
+        if (isAttacking || isPlunging || isDodging) return;
 
-        // 낙하: 땅 아님 + 속도 아래로 (낙하 공격 중일 때도 Fall 모션 유지)
+        // 1. 실제 입력 확인
+        bool hasInput = Mathf.Abs(currentInput.x) > 0.01f;
+
+        // 2. [★수정] 입력이 끊겨도 잠시동안은 움직이는 것으로 판정 (버퍼링)
+        bool isMovingState = hasInput;
+
+        if (hasInput)
+        {
+            moveStopTimer = 0f; // 입력이 있으면 타이머 리셋
+        }
+        else
+        {
+            // 입력이 없어도, 아주 잠깐 동안은 움직이는 상태 유지
+            moveStopTimer += Time.deltaTime;
+            if (moveStopTimer < STOP_DELAY)
+            {
+                isMovingState = true;
+            }
+        }
+
+        // 3. 애니메이션 적용 (isMovingState 사용)
+        // 방향 전환 시에도 Dash가 유지되도록 함
+        ac.PlayMove(isMovingState);
+        ac.PlayDash(isMovingState && isDashing);
+
+        // 4. 낙하
         bool isFalling = !isGrounded && rb.linearVelocity.y < -0.1f;
         ac.PlayFall(isFalling || isPlunging);
     }
@@ -190,12 +208,10 @@ public class MechPlayer : MonoBehaviour
 
     private void HandleJump()
     {
-        // 공격, 찍기, 회피 중 점프 불가
         if (!isAttacking && !isPlunging && !isDodging && isGrounded)
         {
             mc.Jump(mechData.jumpPower);
-            ac.PlayJump(); // Jump Start
-           // if (ec) ec.PlayJumpDust();
+            ac.PlayJump();
         }
     }
 
@@ -203,14 +219,12 @@ public class MechPlayer : MonoBehaviour
     {
         if (isAttacking || isPlunging || isDodging) return;
 
-        // [낙하 공격 발동] 공중 + S키
         if (!isGrounded && isDownPressed)
         {
             StartPlunge();
             return;
         }
 
-        // [일반 지상 공격]
         if (equippedHitbox == null || currentWeaponData == null)
         {
             Debug.LogWarning("무기 데이터가 없습니다.");
@@ -219,79 +233,73 @@ public class MechPlayer : MonoBehaviour
 
         isAttacking = true;
 
-        // 데이터 초기화 (히트박스는 끄고 대기 -> 애니메이션 이벤트가 켬)
         equippedHitbox.Initialize(currentWeaponData.damage, currentWeaponData.knockbackForce);
         equippedHitbox.GetComponent<Collider2D>().enabled = false;
 
-        ac.PlayAttack(); // 애니메이션 재생
+        ac.PlayAttack();
 
-        // ★ 중요: Invoke 삭제됨. 애니메이션 이벤트가 끝을 알려줄 것임.
+        // [★추가됨] 안전장치 가동: 1초가 지나도 끝나지 않으면 강제로 풀어버림
+        if (failsafeCoroutine != null) StopCoroutine(failsafeCoroutine);
+        failsafeCoroutine = StartCoroutine(AttackFailsafeRoutine(1.0f));
     }
 
     private void HandleDodge()
     {
-        if (!canDodge || isDodging || !isGrounded) return; // (필요 시 공중 회피 허용 가능)
+        if (!canDodge || isDodging || !isGrounded) return;
+
+        // [★추가됨] 회피 시작 시 혹시 켜져있을 안전장치 끄기
+        if (failsafeCoroutine != null) StopCoroutine(failsafeCoroutine);
+
         StartCoroutine(DodgeRoutine());
     }
 
     // ==================================================================================
-    // [액션 로직 (Action Logic)]
+    // [액션 로직]
     // ==================================================================================
 
-    // --- 회피 코루틴 ---
     private IEnumerator DodgeRoutine()
     {
         isDodging = true;
         canDodge = false;
 
-        // 방향 결정 (입력 없으면 보는 방향)
         float xDir = currentInput.x != 0 ? Mathf.Sign(currentInput.x) : transform.localScale.x;
 
-        // 순간 가속
         mc.Stop();
         rb.linearVelocity = new Vector2(xDir * dodgeSpeed, 0);
 
-        ac.PlayDodge(); // 회피 애니메이션 Trigger
+        ac.PlayDodge();
 
-        // TODO: 여기서 플레이어 무적 레이어로 변경 (Layer Collision Matrix 설정 필요)
         // gameObject.layer = LayerMask.NameToLayer("PlayerInvincible");
 
         yield return new WaitForSeconds(dodgeDuration);
 
         isDodging = false;
-        mc.Stop(); // 미끄러짐 방지
+        mc.Stop();
 
-        // TODO: 레이어 복구
         // gameObject.layer = LayerMask.NameToLayer("Player");
 
         yield return new WaitForSeconds(dodgeCooldown);
         canDodge = true;
     }
 
-    // --- 낙하 공격 시작 ---
     private void StartPlunge()
     {
         isPlunging = true;
         isAttacking = true;
 
-        // 공중 멈춤 후 급강하
         mc.Stop();
         rb.linearVelocity = new Vector2(0, -plungeSpeed);
 
-        // 필요 시 전용 사운드 재생
         Debug.Log("🚀 낙하 공격 시작!");
     }
 
-    // --- 낙하 공격 착지 (FixedUpdate에서 호출) ---
     private void OnPlungeLand()
     {
         isPlunging = false;
         isAttacking = false;
 
-        ac.PlayLand(); // 착지 애니메이션
-        //if (ec) ec.PlayPlungeImpact(); // 쾅! 이펙트
+        ac.PlayLand();
 
-        // [히트박스 처리] 범위 공격 (무기 Collider 아님)
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(groundCheckPos.position, plungeRadius, enemyLayer);
         foreach (var enemy in hitEnemies)
         {
@@ -301,35 +309,64 @@ public class MechPlayer : MonoBehaviour
     }
 
     // ==================================================================================
-    // [★ 애니메이션 이벤트 수신 함수 (Animator에서 호출)]
+    // [★추가됨] 안전장치 로직 (새로 추가된 부분)
     // ==================================================================================
 
-    // 1. 공격 판정 켜기 (휘두르는 프레임)
+    // 애니메이션 이벤트가 안 들어오면 강제로 상태를 푸는 타이머
+    private IEnumerator AttackFailsafeRoutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+
+        if (isAttacking)
+        {
+            Debug.LogWarning("⚠️ 공격 상태 꼬임 감지! 강제 리셋합니다.");
+            OnAttackEnd(); // 강제 종료
+        }
+    }
+
+    // 외부(피격 등)에서 상태를 초기화해야 할 때 부르는 함수
+    public void ResetState()
+    {
+        StopAllCoroutines(); // 진행 중인 회피, 안전장치 중단
+
+        isAttacking = false;
+        isPlunging = false;
+        isDodging = false;
+        canDodge = true;
+
+        if (equippedHitbox != null)
+            equippedHitbox.GetComponent<Collider2D>().enabled = false;
+    }
+
+    // ==================================================================================
+    // [애니메이션 이벤트 수신 함수]
+    // ==================================================================================
+
     public void OnHitboxOpen()
     {
         if (equippedHitbox != null)
             equippedHitbox.GetComponent<Collider2D>().enabled = true;
     }
 
-    // 2. 공격 판정 끄기 (동작 끝나는 프레임)
     public void OnHitboxClose()
     {
         if (equippedHitbox != null)
             equippedHitbox.GetComponent<Collider2D>().enabled = false;
     }
 
-    // 3. 공격 행동 완전 종료 (후딜 종료 프레임)
     public void OnAttackEnd()
     {
+        // [★추가됨] 정상적으로 끝났으니 안전장치 타이머 해제
+        if (failsafeCoroutine != null) StopCoroutine(failsafeCoroutine);
+
         isAttacking = false;
-        // 안전장치로 한 번 더 끔
+
         if (equippedHitbox != null)
             equippedHitbox.GetComponent<Collider2D>().enabled = false;
 
         Debug.Log("✅ 공격 종료 (이벤트 수신 완료)");
     }
 
-    // 4. 이펙트 재생 (문자열로 이름 받기)
     public void OnPlayEffect(string effectName)
     {
         //if (ec != null) ec.PlayEffectByName(effectName);
@@ -357,7 +394,6 @@ public class MechPlayer : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(groundCheckPos.position, groundCheckRadius);
 
-            // 낙하 공격 범위 미리보기
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(groundCheckPos.position, plungeRadius);
         }
