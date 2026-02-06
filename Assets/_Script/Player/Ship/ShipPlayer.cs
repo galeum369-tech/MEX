@@ -6,15 +6,20 @@ public class ShipPlayer : MonoBehaviour
 {
     ShipData shipData;
 
-
     [SerializeField] private PlayerInputHandler inputHandler;
 
+    //포탑 오브젝트 연결
+    [SerializeField] Transform turret;
+
     private ShipMoveController mc;
+    private ShipTurretController tc;
     private Rigidbody2D rb;
+    private Camera mainCam;     //마우스 좌표 변환용
 
     // 상태 변수
     private Vector2 currentInput;
     private bool isBoosting;
+    private Vector2 mousePos;   //마우스 월드 좌표
 
     private void Awake()
     {
@@ -22,7 +27,12 @@ public class ShipPlayer : MonoBehaviour
         if (inputHandler == null) inputHandler = GetComponent<PlayerInputHandler>();
         mc = new ShipMoveController(rb);
 
-        // [물리 세팅: 브루저 타입]
+        if(turret != null)
+            tc = new ShipTurretController(turret);
+
+        mainCam = Camera.main;
+
+        // 물리 세팅
         rb.gravityScale = 0f;
         rb.linearDamping = 2.0f; // 마찰력 (키 뗄 때 감속용)
         rb.freezeRotation = true;
@@ -57,6 +67,15 @@ public class ShipPlayer : MonoBehaviour
     {
         inputHandler.OnShipMove -= HandleMove;
         inputHandler.OnBoost -= HandleBoost;
+    }
+
+    private void Update()
+    {
+        //마우스 좌표를 월드 좌표로 변환
+        mousePos = mainCam.ScreenToWorldPoint(inputHandler.GetMousePosition());
+
+        if(tc != null)
+            tc.LookAt(mousePos);
     }
 
     private void FixedUpdate()

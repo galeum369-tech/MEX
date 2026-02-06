@@ -190,6 +190,15 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Aim"",
+                    ""type"": ""Value"",
+                    ""id"": ""67a2bf33-d21c-4129-b74e-4366ad8b5d1c"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -355,6 +364,17 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""UseItem04"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""01941aeb-f057-477c-ab61-6f9d01d124d3"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -688,6 +708,7 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
         m_PlayerTop_UseItem02 = m_PlayerTop.FindAction("UseItem02", throwIfNotFound: true);
         m_PlayerTop_UseItem03 = m_PlayerTop.FindAction("UseItem03", throwIfNotFound: true);
         m_PlayerTop_UseItem04 = m_PlayerTop.FindAction("UseItem04", throwIfNotFound: true);
+        m_PlayerTop_Aim = m_PlayerTop.FindAction("Aim", throwIfNotFound: true);
         // PlayerSide
         m_PlayerSide = asset.FindActionMap("PlayerSide", throwIfNotFound: true);
         m_PlayerSide_Move = m_PlayerSide.FindAction("Move", throwIfNotFound: true);
@@ -795,6 +816,7 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerTop_UseItem02;
     private readonly InputAction m_PlayerTop_UseItem03;
     private readonly InputAction m_PlayerTop_UseItem04;
+    private readonly InputAction m_PlayerTop_Aim;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerTop".
     /// </summary>
@@ -850,6 +872,10 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerTop/UseItem04".
         /// </summary>
         public InputAction @UseItem04 => m_Wrapper.m_PlayerTop_UseItem04;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerTop/Aim".
+        /// </summary>
+        public InputAction @Aim => m_Wrapper.m_PlayerTop_Aim;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -909,6 +935,9 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
             @UseItem04.started += instance.OnUseItem04;
             @UseItem04.performed += instance.OnUseItem04;
             @UseItem04.canceled += instance.OnUseItem04;
+            @Aim.started += instance.OnAim;
+            @Aim.performed += instance.OnAim;
+            @Aim.canceled += instance.OnAim;
         }
 
         /// <summary>
@@ -953,6 +982,9 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
             @UseItem04.started -= instance.OnUseItem04;
             @UseItem04.performed -= instance.OnUseItem04;
             @UseItem04.canceled -= instance.OnUseItem04;
+            @Aim.started -= instance.OnAim;
+            @Aim.performed -= instance.OnAim;
+            @Aim.canceled -= instance.OnAim;
         }
 
         /// <summary>
@@ -1298,6 +1330,13 @@ public partial class @PlayerInput_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnUseItem04(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Aim" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAim(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PlayerSide" which allows adding and removing callbacks.

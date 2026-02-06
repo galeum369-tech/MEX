@@ -151,6 +151,14 @@ public class PlayerInputHandler : MonoBehaviour
         }
     }
 
+    //마우스 위치
+    public Vector2 GetMousePosition()
+    {
+        if(input == null)
+            return Vector2.zero;
+        return input.PlayerTop.Aim.ReadValue<Vector2>();
+    }
+
     #region Callbacks
     // 콜백 함수 내용은 아까랑 100% 똑같음
     private void MoveCtx(InputAction.CallbackContext ctx) => OnMove?.Invoke(ctx.ReadValue<Vector2>());
@@ -171,5 +179,7 @@ public class PlayerInputHandler : MonoBehaviour
     // private void UseItem02Ctx(InputAction.CallbackContext ctx) { if (ctx.performed) OnUseItem02?.Invoke(); }
     // private void UseItem03Ctx(InputAction.CallbackContext ctx) { if (ctx.performed) OnUseItem03?.Invoke(); }
     // private void UseItem04Ctx(InputAction.CallbackContext ctx) { if (ctx.performed) OnUseItem04?.Invoke(); }
+
+
     #endregion
 }

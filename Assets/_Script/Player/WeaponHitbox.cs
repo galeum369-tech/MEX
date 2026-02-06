@@ -14,6 +14,19 @@ public class WeaponHitbox : MonoBehaviour
     private float currentDamage;
     private float currentKnockback;
 
+    public SupportDrone connectedDrone;
+
+    private void Start()
+    {
+        // 만약 에디터에서 연결 안 했다면, 자동으로 찾기 (안전장치)
+        if (connectedDrone == null)
+        {
+            // 내 부모(플레이어)의 형제들 중에 드론이 있는지 확인
+            if (transform.root != null)
+                connectedDrone = transform.root.GetComponentInChildren<SupportDrone>();
+        }
+    }
+
     public void Initialize(float damage, float knockback)
     {
         this.currentDamage = damage;
@@ -41,6 +54,11 @@ public class WeaponHitbox : MonoBehaviour
             if (enemy != null)
             {
                 enemy.TakeDamage(currentDamage, currentKnockback);
+            }
+            if (connectedDrone != null)
+            {
+                // 적의 위치를 넘겨줘서 드론이 그쪽을 참고하게 할 수도 있음
+                connectedDrone.OnPlayerHitEnemy(collision.transform.position);
             }
         }
     }
