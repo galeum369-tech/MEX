@@ -114,7 +114,7 @@ public class HomingMissile : MonoBehaviour
             IDamageable targetStats = collision.GetComponent<IDamageable>();
             if (targetStats != null)
             {
-                targetStats.TakeDamage(damage, damage);
+                targetStats.TakeDamage(damage, 0);
             }
             
 
