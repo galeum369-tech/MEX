@@ -7,19 +7,16 @@ public class ShipPlayer : MonoBehaviour
     ShipData shipData;
 
     [SerializeField] private PlayerInputHandler inputHandler;
-
-    //포탑 오브젝트 연결
     [SerializeField] Transform turret;
 
     private ShipMoveController mc;
     private ShipTurretController tc;
     private Rigidbody2D rb;
-    private Camera mainCam;     //마우스 좌표 변환용
+    private Camera mainCam;
 
-    // 상태 변수
     private Vector2 currentInput;
     private bool isBoosting;
-    private Vector2 mousePos;   //마우스 월드 좌표
+    private Vector2 mousePos;
 
     private void Awake()
     {
@@ -27,37 +24,51 @@ public class ShipPlayer : MonoBehaviour
         if (inputHandler == null) inputHandler = GetComponent<PlayerInputHandler>();
         mc = new ShipMoveController(rb);
 
-        if(turret != null)
-            tc = new ShipTurretController(turret);
-
+        if (turret != null) tc = new ShipTurretController(turret);
         mainCam = Camera.main;
 
-        // 물리 세팅
         rb.gravityScale = 0f;
-        rb.linearDamping = 2.0f; // 마찰력 (키 뗄 때 감속용)
+        rb.linearDamping = 2.0f;
         rb.freezeRotation = true;
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
     }
 
     private void Start()
     {
-        // 게임 매니저에서 플레이어 데이터 가져오기
         if (GameManager.instance != null)
         {
             shipData = GameManager.instance.playerData.shipData;
+
+            // [★핵심] 씬 이동 위치 처리 로직
+            if (GameManager.instance.isTransitioning)
+            {
+                if (GameManager.instance.useRandomSpawn)
+                {
+                    // 랜덤 스폰 (탑뷰 씬 진입 시)
+                    if (SpawnPointManager.Instance != null)
+                        transform.position = SpawnPointManager.Instance.GetRandomSpawnPosition();
+
+                    GameManager.instance.useRandomSpawn = false;
+                }
+                else
+                {
+                    // 지정 위치
+                    transform.position = GameManager.instance.targetSpawnPos;
+                }
+
+                GameManager.instance.isTransitioning = false; // 이동 완료
+                Debug.Log($"📍 수송선 위치 설정 완료: {transform.position}");
+            }
         }
         else
         {
-            Debug.LogWarning("GameManager가 없음 임시 데이터 사용");
-            shipData = new ShipData(); // 기본값 사용
+            Debug.LogWarning("GameManager 없음: 임시 데이터 사용");
+            shipData = new ShipData();
         }
 
-        //인풋 핸들러에게 탑뷰임을 알림
-        inputHandler.SetControlMode(false); // false = 탑뷰
+        inputHandler.SetControlMode(false); // TopView 모드
     }
 
-
-    // (OnEnable, OnDisable은 이전과 동일)
     private void OnEnable()
     {
         inputHandler.OnShipMove += HandleMove;
@@ -71,23 +82,17 @@ public class ShipPlayer : MonoBehaviour
 
     private void Update()
     {
-        //마우스 좌표를 월드 좌표로 변환
+        // GetMousePosition()이 이제 하드웨어 좌표를 주므로 문제 없음
         mousePos = mainCam.ScreenToWorldPoint(inputHandler.GetMousePosition());
 
-        if(tc != null)
-            tc.LookAt(mousePos);
+        if (tc != null) tc.LookAt(mousePos);
     }
 
     private void FixedUpdate()
     {
-        if(shipData == null) return; // 데이터 없으면 무시
-
+        if (shipData == null) return;
         float finalSpeed = shipData.moveSpeed * (isBoosting ? shipData.boostMultiplier : 1f);
-
-        // 가속도(acceleration) 파라미터 추가됨
         mc.Move(currentInput, finalSpeed, shipData.acceleration);
-
-        // 회전
         mc.Rotate(currentInput, shipData.turnSpeed);
     }
 

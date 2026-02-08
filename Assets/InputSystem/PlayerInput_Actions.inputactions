@@ -104,15 +104,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Aim",
-                    "type": "Value",
-                    "id": "67a2bf33-d21c-4129-b74e-4366ad8b5d1c",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -278,17 +269,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "UseItem04",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "01941aeb-f057-477c-ab61-6f9d01d124d3",
-                    "path": "<Mouse>/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
