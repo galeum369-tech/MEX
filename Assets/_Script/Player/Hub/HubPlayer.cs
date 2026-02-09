@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerInputHandler))]
 public class HubPlayer : MonoBehaviour
 {
-    PlayerInputHandler inputHandler;
+    [SerializeField] private PlayerInputHandler inputHandler;
     HubMoveController mc;
     //Animcontroller ac;
 
