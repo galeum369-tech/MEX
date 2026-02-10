@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09ba8070def067c4aa54ec8f4ec9b373, type: 3}
+  m_Name: "\uC190\uC0C1\uB41C \uBAA8\uD130"
+  m_EditorClassIdentifier: 
+  itemID: 1002
+  itemName: "\uC190\uC0C1\uB41C \uBAA8\uD130"
+  itemIcon: {fileID: 21300000, guid: 042fae2dd68bce044b8fbd1f26724a2d, type: 3}
+  description: "\uAD6C\uB3D9\uACC4\uC758 \uC911\uCD94 \uBD80\uD488. \uC77C\uBD80\uB294
+    \uC4F8\uB9CC\uD574 \uBCF4\uC778\uB2E4"
+  itemType: 0
+  maxStack: 50
+  price: 50
+  effectValue: 0
