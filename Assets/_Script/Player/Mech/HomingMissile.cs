@@ -44,10 +44,26 @@ public class HomingMissile : MonoBehaviour
         this.damage = newDamage;
     }
 
+    // 재탐색 쿨타임 변수 추가 (전역 변수로 선언하세요)
+    private float searchTimer = 0f;
+    private float searchInterval = 0.2f; // 0.2초마다 재탐색
+
     private void FixedUpdate()
     {
         // 1. 앞으로 전진 (무조건 자신의 오른쪽 방향으로)
         rb.linearVelocity = transform.right * speed;
+
+        // ★ [핵심 수정] 타겟이 죽었거나(null) 없어졌으면 재탐색
+        if (target == null)
+        {
+            // 매 프레임 찾으면 성능 저하되므로 쿨타임 적용
+            searchTimer -= Time.fixedDeltaTime;
+            if (searchTimer <= 0f)
+            {
+                target = FindClosestEnemy(); // 새 적 찾기
+                searchTimer = searchInterval; // 타이머 초기화
+            }
+        }
 
         // 2. 유도 로직 (타겟이 있으면 그쪽으로 회전)
         if (target != null)
@@ -56,19 +72,16 @@ public class HomingMissile : MonoBehaviour
             Vector2 direction = (Vector2)target.position - rb.position;
             direction.Normalize();
 
-            // 외적(Cross Product)을 이용해 타겟이 내 왼쪽에 있는지 오른쪽에 있는지 판별
+            // 외적(Cross Product)을 이용해 회전 방향 결정
             float rotateAmount = Vector3.Cross(direction, transform.right).z;
 
-            // 회전 적용 (rotateAmount가 양수면 시계방향, 음수면 반시계)
+            // 회전 적용
             rb.angularVelocity = -rotateAmount * rotateSpeed;
         }
         else
         {
-            // 타겟이 없으면 회전 멈춤 (직진)
+            // 타겟을 찾아봤는데도 없으면 회전 멈춤 (직진)
             rb.angularVelocity = 0f;
-
-            // (선택 사항) 날아가는 도중에 타겟을 잃으면 새로운 적을 찾을지 여부
-            // target = FindClosestEnemy(); 
         }
 
         // 3. 수명 체크

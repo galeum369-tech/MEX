@@ -5,13 +5,15 @@ using System.Collections;
 [RequireComponent(typeof(PlayerInputHandler))]
 public class MechPlayer : MonoBehaviour
 {
-    // ... (기존 변수들은 그대로 둠) ...
     private PlayerInputHandler inputHandler;
     private MecMoveController mc;
     private MechAnimController ac;
     private Rigidbody2D rb;
     private Animator anim;
     private MechData mechData;
+
+    // [추가] 하단 점프를 위해 현재 접촉 중인 플랫폼 저장
+    private GameObject currentPlatform;
 
     [Header("Weapon System")]
     [SerializeField] private WeaponHitbox equippedHitbox;
@@ -22,8 +24,8 @@ public class MechPlayer : MonoBehaviour
     [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask enemyLayer;
+    [SerializeField] private LayerMask platformLayer; // 인스펙터에서 플랫폼 레이어 설정 필수
 
-    // ... (설정 변수들 생략 - 인스펙터 값 유지됨) ...
     [Header("Settings")]
     [SerializeField] private float plungeSpeed = 30f;
     [SerializeField] private float plungeDamage = 50f;
@@ -56,17 +58,14 @@ public class MechPlayer : MonoBehaviour
 
     private void Start()
     {
-        // 1. 데이터 연결
         if (GameManager.instance != null)
         {
             mechData = GameManager.instance.playerData.mechData;
 
-            // [★핵심] 씬 이동 위치 처리 로직
             if (GameManager.instance.isTransitioning)
             {
                 if (GameManager.instance.useRandomSpawn)
                 {
-                    // 랜덤 스폰 (탑뷰 -> 탑뷰 랜덤일 수도 있고 등등)
                     if (SpawnPointManager.Instance != null)
                         transform.position = SpawnPointManager.Instance.GetRandomSpawnPosition();
 
@@ -74,11 +73,10 @@ public class MechPlayer : MonoBehaviour
                 }
                 else
                 {
-                    // 지정 위치 (포탈, 복귀 등)
                     transform.position = GameManager.instance.targetSpawnPos;
                 }
 
-                GameManager.instance.isTransitioning = false; // 이동 완료
+                GameManager.instance.isTransitioning = false;
                 Debug.Log($"📍 메카 위치 설정 완료: {transform.position}");
             }
         }
@@ -97,7 +95,7 @@ public class MechPlayer : MonoBehaviour
         inputHandler.OnDash += HandleDash;
         inputHandler.OnAttack += HandleAttack;
         inputHandler.OnFastFall += HandleDownInput;
-        inputHandler.OnDodge += HandleDodge;
+        inputHandler.OnDodge += HandleDodge; // Space 바 입력
     }
 
     private void OnDisable()
@@ -109,8 +107,6 @@ public class MechPlayer : MonoBehaviour
         inputHandler.OnFastFall -= HandleDownInput;
         inputHandler.OnDodge -= HandleDodge;
     }
-
-    // ... (FixedUpdate, UpdateAnimationState, 각종 핸들러 및 액션 함수들은 기존 코드와 동일하므로 생략하지 않고 그대로 유지하세요. 아래는 편의상 핵심 로직 포함) ...
 
     private void FixedUpdate()
     {
@@ -162,12 +158,57 @@ public class MechPlayer : MonoBehaviour
         ac.PlayFall(isFalling || isPlunging);
     }
 
-    // ... (나머지 Input 핸들러 및 액션 함수들 - HandleMove, HandleJump 등 기존 코드 유지) ...
     private void HandleMove(Vector2 input) => currentInput = input;
     private void HandleDash(bool isPressed) => isDashing = isPressed;
     private void HandleDownInput(bool isPressed) => isDownPressed = isPressed;
 
-    private void HandleJump() { if (!isAttacking && !isPlunging && !isDodging && isGrounded) { mc.Jump(mechData.jumpPower); ac.PlayJump(); } }
+    // 점프는 W키로 할당됨
+    private void HandleJump()
+    {
+        if (!isAttacking && !isPlunging && !isDodging && isGrounded)
+        {
+            mc.Jump(mechData.jumpPower);
+            ac.PlayJump();
+        }
+    }
+
+    // [수정] 회피(Space) 핸들러: S + Space 입력 시 하단 점프 발동
+    private void HandleDodge()
+    {
+        if (!canDodge || isDodging) return;
+
+        // S키(isDownPressed)가 눌려있고, 플랫폼 위에 있다면 하단 점프
+        if (isDownPressed && isGrounded && currentPlatform != null)
+        {
+            StartCoroutine(DownJumpRoutine());
+        }
+        else if (isGrounded) // 평지나 일반 점프 중에는 회피 사용
+        {
+            if (failsafeCoroutine != null) StopCoroutine(failsafeCoroutine);
+            StartCoroutine(DodgeRoutine());
+        }
+    }
+
+    // 하단 점프 코루틴
+    private IEnumerator DownJumpRoutine()
+    {
+        Collider2D platformCollider = currentPlatform.GetComponent<Collider2D>();
+        CapsuleCollider2D playerCollider = GetComponent<CapsuleCollider2D>();
+
+        if (platformCollider != null && playerCollider != null)
+        {
+            canDodge = false;
+            Physics2D.IgnoreCollision(playerCollider, platformCollider, true);
+
+            // 아래로 가속을 주어 플랫폼을 빠르게 통과
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, -5f);
+
+            yield return new WaitForSeconds(0.3f); // 통과 대기 시간
+
+            Physics2D.IgnoreCollision(playerCollider, platformCollider, false);
+            canDodge = true;
+        }
+    }
 
     private void HandleAttack()
     {
@@ -183,13 +224,6 @@ public class MechPlayer : MonoBehaviour
         failsafeCoroutine = StartCoroutine(AttackFailsafeRoutine(1.0f));
     }
 
-    private void HandleDodge()
-    {
-        if (!canDodge || isDodging || !isGrounded) return;
-        if (failsafeCoroutine != null) StopCoroutine(failsafeCoroutine);
-        StartCoroutine(DodgeRoutine());
-    }
-
     private IEnumerator DodgeRoutine()
     {
         isDodging = true; canDodge = false;
@@ -201,6 +235,7 @@ public class MechPlayer : MonoBehaviour
     }
 
     private void StartPlunge() { isPlunging = true; isAttacking = true; mc.Stop(); rb.linearVelocity = new Vector2(0, -plungeSpeed); Debug.Log("🚀 낙하 공격!"); }
+
     private void OnPlungeLand()
     {
         isPlunging = false; isAttacking = false; ac.PlayLand();
@@ -215,8 +250,29 @@ public class MechPlayer : MonoBehaviour
     public void OnHitboxOpen() { if (equippedHitbox != null) equippedHitbox.GetComponent<Collider2D>().enabled = true; }
     public void OnHitboxClose() { if (equippedHitbox != null) equippedHitbox.GetComponent<Collider2D>().enabled = false; }
     public void OnAttackEnd() { if (failsafeCoroutine != null) StopCoroutine(failsafeCoroutine); isAttacking = false; if (equippedHitbox != null) equippedHitbox.GetComponent<Collider2D>().enabled = false; }
-    public void OnPlayEffect(string effectName) { }
 
     private void FlipSprite(float xDir) { if (xDir > 0) transform.localScale = new Vector3(1, 1, 1); else if (xDir < 0) transform.localScale = new Vector3(-1, 1, 1); }
-    private void CheckGround() { if (groundCheckPos != null) isGrounded = Physics2D.OverlapCircle(groundCheckPos.position, groundCheckRadius, groundLayer); }
+
+    private void CheckGround()
+    {
+        if (groundCheckPos != null)
+            isGrounded = Physics2D.OverlapCircle(groundCheckPos.position, groundCheckRadius, groundLayer);
+    }
+
+    // 플랫폼 감지 로직
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (((1 << collision.gameObject.layer) & platformLayer) != 0)
+        {
+            currentPlatform = collision.gameObject;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (((1 << collision.gameObject.layer) & platformLayer) != 0)
+        {
+            currentPlatform = null;
+        }
+    }
 }

@@ -9,6 +9,20 @@ public class ShipPlayer : MonoBehaviour
     [SerializeField] private PlayerInputHandler inputHandler;
     [SerializeField] Transform turret;
 
+    [Header("🔫 기본 공격 (기관총)")]
+    [SerializeField] private GameObject bulletPrefab;   // 직선 총알 프리팹
+    [SerializeField] private Transform firePoint;       // 발사 위치 (총구)
+    [SerializeField] private float fireRate = 0.15f;    // 연사 속도
+    private bool isFiring;                              // 발사 키 누르고 있는지 여부
+    private float nextFireTime;                         // 다음 발사 가능 시간
+
+    [Header("🚀 스킬 (유도 미사일)")]
+    [SerializeField] private GameObject missilePrefab;  // 유도 미사일 프리팹 (HomingMissile 붙은 거)
+    [SerializeField] private float skillCooldown = 5f;  // 스킬 쿨타임
+    [SerializeField] private int missileCount = 6;      // 한 번에 나가는 미사일 개수
+    [SerializeField] private int missileDamage = 30;    // 미사일 데미지
+    private float nextSkillTime;                        // 다음 스킬 사용 가능 시간
+
     private ShipMoveController mc;
     private ShipTurretController tc;
     private Rigidbody2D rb;
@@ -27,6 +41,7 @@ public class ShipPlayer : MonoBehaviour
         if (turret != null) tc = new ShipTurretController(turret);
         mainCam = Camera.main;
 
+        // 물리 설정 초기화
         rb.gravityScale = 0f;
         rb.linearDamping = 2.0f;
         rb.freezeRotation = true;
@@ -44,19 +59,15 @@ public class ShipPlayer : MonoBehaviour
             {
                 if (GameManager.instance.useRandomSpawn)
                 {
-                    // 랜덤 스폰 (탑뷰 씬 진입 시)
                     if (SpawnPointManager.Instance != null)
                         transform.position = SpawnPointManager.Instance.GetRandomSpawnPosition();
-
                     GameManager.instance.useRandomSpawn = false;
                 }
                 else
                 {
-                    // 지정 위치
                     transform.position = GameManager.instance.targetSpawnPos;
                 }
-
-                GameManager.instance.isTransitioning = false; // 이동 완료
+                GameManager.instance.isTransitioning = false;
                 Debug.Log($"📍 수송선 위치 설정 완료: {transform.position}");
             }
         }
@@ -66,36 +77,109 @@ public class ShipPlayer : MonoBehaviour
             shipData = new ShipData();
         }
 
-        inputHandler.SetControlMode(false); // TopView 모드
+        inputHandler.SetControlMode(false); // TopView 모드 강제 설정
     }
 
     private void OnEnable()
     {
+        // 이동 & 부스트
         inputHandler.OnShipMove += HandleMove;
         inputHandler.OnBoost += HandleBoost;
+
+        // 공격 (홀드 방식)
+        inputHandler.OnAttackHold += HandleAttack;
+
+        // 스킬 (단발 방식)
+        inputHandler.OnSkill += HandleSkill;
     }
+
     private void OnDisable()
     {
         inputHandler.OnShipMove -= HandleMove;
         inputHandler.OnBoost -= HandleBoost;
+        inputHandler.OnAttackHold -= HandleAttack;
+        inputHandler.OnSkill -= HandleSkill;
     }
 
     private void Update()
     {
-        // GetMousePosition()이 이제 하드웨어 좌표를 주므로 문제 없음
+        // 마우스 조준
         mousePos = mainCam.ScreenToWorldPoint(inputHandler.GetMousePosition());
-
         if (tc != null) tc.LookAt(mousePos);
+
+        // 1. 기본 공격 로직 (누르고 있고 + 쿨타임 지남)
+        if (isFiring && Time.time >= nextFireTime)
+        {
+            ShootBullet();
+            nextFireTime = Time.time + fireRate;
+        }
     }
 
     private void FixedUpdate()
     {
         if (shipData == null) return;
+
+        // 이동 물리 연산
         float finalSpeed = shipData.moveSpeed * (isBoosting ? shipData.boostMultiplier : 1f);
         mc.Move(currentInput, finalSpeed, shipData.acceleration);
         mc.Rotate(currentInput, shipData.turnSpeed);
     }
 
+    // =========================================================
+    // 🎮 액션 처리 함수들
+    // =========================================================
+
     private void HandleMove(Vector2 input) => currentInput = input;
     private void HandleBoost(bool isPressed) => isBoosting = isPressed;
+
+    // 공격 키 상태 (누름/뗌) 저장
+    private void HandleAttack(bool isPressed) => isFiring = isPressed;
+
+    // 스킬 키 눌렀을 때 실행
+    private void HandleSkill()
+    {
+        // 쿨타임 체크
+        if (Time.time >= nextSkillTime)
+        {
+            FireHomingMissiles();
+            nextSkillTime = Time.time + skillCooldown;
+            Debug.Log($"🚀 미사일 발사! (다음 쿨타임: {skillCooldown}초 뒤)");
+        }
+        else
+        {
+            Debug.Log("⏳ 스킬 쿨타임 중...");
+        }
+    }
+
+    // =========================================================
+    // ⚔️ 전투 로직
+    // =========================================================
+
+    // 1. 기본 사격 (직선)
+    private void ShootBullet()
+    {
+        if (bulletPrefab == null || firePoint == null) return;
+
+        Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        // 사운드 추가 위치: AudioManager.Instance.PlaySfx("Shoot");
+    }
+
+    // 2. 스킬 사격 (유도 미사일 난사)
+    private void FireHomingMissiles()
+    {
+        if (missilePrefab == null || firePoint == null) return;
+
+        for (int i = 0; i < missileCount; i++)
+        {
+            // 미사일 생성
+            GameObject missileObj = Instantiate(missilePrefab, firePoint.position, firePoint.rotation);
+
+            // 데미지 설정 (HomingMissile 스크립트가 붙어있어야 함)
+            HomingMissile missileScript = missileObj.GetComponent<HomingMissile>();
+            if (missileScript != null)
+            {
+                missileScript.SetDamage(missileDamage);
+            }
+        }
+    }
 }

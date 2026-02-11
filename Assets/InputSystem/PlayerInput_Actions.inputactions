@@ -70,7 +70,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "UseItem01",
+                    "name": "QuickSlot1",
                     "type": "Button",
                     "id": "8967b2ad-b90a-4b43-837d-a200d1324318",
                     "expectedControlType": "",
@@ -79,7 +79,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "UseItem02",
+                    "name": "QuickSlot2",
                     "type": "Button",
                     "id": "be9d293c-77fd-46f7-ab7c-06e18a01279b",
                     "expectedControlType": "",
@@ -88,7 +88,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "UseItem03",
+                    "name": "QuickSlot3",
                     "type": "Button",
                     "id": "d8510756-99a1-4c73-a97d-6597a7142a30",
                     "expectedControlType": "",
@@ -97,9 +97,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "UseItem04",
+                    "name": "QuickSlot4",
                     "type": "Button",
                     "id": "a434a314-358a-465f-8dcb-270283eb25a3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Inventory",
+                    "type": "Button",
+                    "id": "e9980000-6736-411e-9043-65a3d6757eb1",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -235,7 +244,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "UseItem01",
+                    "action": "QuickSlot1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -246,7 +255,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "UseItem02",
+                    "action": "QuickSlot2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -257,7 +266,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "UseItem03",
+                    "action": "QuickSlot3",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -268,7 +277,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "UseItem04",
+                    "action": "QuickSlot4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "caf96567-7611-43d2-8f2e-f0e9fd51024e",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Inventory",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -360,7 +380,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "UseItem01",
+                    "name": "QuickSlot1",
                     "type": "Button",
                     "id": "d0d9dd80-034c-42e1-9c97-9128eb74afb9",
                     "expectedControlType": "",
@@ -369,7 +389,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "UseItem02",
+                    "name": "QuickSlot2",
                     "type": "Button",
                     "id": "b79931eb-13e6-484f-85b6-08df444a76b4",
                     "expectedControlType": "",
@@ -378,7 +398,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "UseItem03",
+                    "name": "QuickSlot3",
                     "type": "Button",
                     "id": "d0c238f2-1c51-4e2e-93eb-135b3e4aae5d",
                     "expectedControlType": "",
@@ -387,9 +407,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "UseItem04",
+                    "name": "QuickSlot4",
                     "type": "Button",
                     "id": "e4f1c93b-bb3c-44a4-bfa6-aeaf428e5c4c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Inventory",
+                    "type": "Button",
+                    "id": "12a5c993-ac45-4101-bc15-e30de4766522",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -503,7 +532,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "UseItem01",
+                    "action": "QuickSlot1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -514,7 +543,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "UseItem02",
+                    "action": "QuickSlot2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -525,29 +554,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "UseItem03",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "44c7f5f6-ebaa-495b-a4c7-7820808d36b7",
-                    "path": "<Keyboard>/3",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "UseItem04",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "8f4dc555-990a-4e3f-828d-671db6f58c32",
-                    "path": "<Keyboard>/3",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "UseItem04",
+                    "action": "QuickSlot3",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -558,7 +565,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "UseItem04",
+                    "action": "QuickSlot4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "43ad9818-5b92-450e-951b-0b5024afd5ad",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Inventory",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
