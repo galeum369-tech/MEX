@@ -12,7 +12,7 @@ public class MapPiece : MonoBehaviour
     [SerializeField] private List<Transform> enemySpawnPoints;
 
     // 소환할 적 프리팹 (나중에 EnemyManager 등으로 분리 가능)
-    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private List<EnemyData> spawnableEnemyData;
 
     /// <summary>
     /// 맵이 생성될 때 MapGenerator에 의해 호출되는 초기화 함수
@@ -50,16 +50,25 @@ public class MapPiece : MonoBehaviour
 
     private void SpawnEnemy(Transform spawnPoint, int difficulty)
     {
-        if (enemyPrefab == null) return;
+        if (spawnableEnemyData == null || spawnableEnemyData.Count == 0) return;
 
-        // 적 생성
-        GameObject enemyObj = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+        // 1. 리스트에서 랜덤하게 적 데이터 하나 뽑기
+        EnemyData selectedData = spawnableEnemyData[Random.Range(0, spawnableEnemyData.Count)];
 
-        // 생성된 적의 부모를 이 맵 조각으로 설정 (Hierarchy 정리용)
+        // 2. 데이터에 연결된 프리팹 생성
+        GameObject enemyObj = Instantiate(selectedData.prefab, spawnPoint.position, Quaternion.identity);
+
+        // 3. 부모 설정
         enemyObj.transform.SetParent(this.transform);
 
-        // [참고] 나중에 적의 스탯(체력 등)을 난이도에 맞게 보정하는 로직을 여기에 추가 가능
-        // EnemyController enemyScript = enemyObj.GetComponent<EnemyController>();
-        // if (enemyScript != null) enemyScript.ApplyDifficulty(difficulty);
+        // 4. 초기화 및 난이도 주입
+        EnemyBase enemy = enemyObj.GetComponent<EnemyBase>();
+        if (enemy != null)
+        {
+            // SO 데이터를 적에게 직접 전달 (스탯 설정용)
+            enemy.data = selectedData;
+            enemy.Init(difficulty);
+        }
     }
+
 }

@@ -7,9 +7,14 @@ public class MechData
     public float maxHP = 500f;
     public float currentHP = 500f;
 
-    [Header("특수 자원 (리게인/필살기)")]
-    public float maxGauge = 100f; 
-    public float currentGauge = 0f;
+    [Header("자원 (타격 시 회복)")]
+    // 1. 스킬 게이지 (필살기용)
+    public float maxSkillGauge = 100f;
+    public float currentSkillGauge = 0f;
+
+    // 2. 회복 게이지 (자가 수리용)
+    public float maxRepairGauge = 100f;
+    public float currentRepairGauge = 0f;
 
     [Header("기동성")]
     public float moveSpeed = 4f;

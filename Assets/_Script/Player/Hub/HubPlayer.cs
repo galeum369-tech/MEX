@@ -1,39 +1,45 @@
 using UnityEngine;
 
-
+[RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(PlayerInputHandler))]
 public class HubPlayer : MonoBehaviour
 {
-    [SerializeField] private PlayerInputHandler inputHandler;
-    HubMoveController mc;
-    //Animcontroller ac;
+    private PlayerInputHandler inputHandler;
+    private HubMoveController mc;
+    private Rigidbody2D rb;
 
-    Rigidbody2D rb;
-
-    //허브는 스탯 데이터가 따로 없음 해서 이 스크립트에서 직접 설정
     [Header("허브 플레이어 스탯")]
     public float moveSpeed = 5f;
-    public float jumpForce = 10f;
+    public float jumpForce = 12f;
     public float fastFallSpeed = 15f;
+
+    [Header("Ground Check")]
+    [SerializeField] private Transform groundCheckPos; // 발밑에 빈 오브젝트 배치 후 연결
+    [SerializeField] private float groundCheckRadius = 0.2f;
+    [SerializeField] private LayerMask groundLayer;    // 바닥 레이어 설정
+
+    private Vector2 currentInput;
+    private bool isGrounded;
+    private bool isDownPressed;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         inputHandler = GetComponent<PlayerInputHandler>();
-        mc = new HubMoveController(rb);
-        //ac = new Animcontroller(GetComponent<Animator>());
+        mc = new HubMoveController(rb); // 분리형 컨트롤러 유지
+
+        // 물리 설정
+        rb.gravityScale = 3f;
+        rb.freezeRotation = true;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
     }
 
     private void Start()
     {
-        // true = SideView (인간/메카닉), false = TopView (수송선)
         if (inputHandler != null)
-        {
-            inputHandler.SetControlMode(true); // 허브는 사이드뷰
-        }
+            inputHandler.SetControlMode(true); // SideView 모드
     }
 
-    #region 입력 이벤트 구독/해제 허브에는 이동, 점프, 상호작용정도만 필요
     private void OnEnable()
     {
         inputHandler.OnMove += HandleMove;
@@ -41,6 +47,7 @@ public class HubPlayer : MonoBehaviour
         inputHandler.OnFastFall += HandleFastFall;
         inputHandler.OnInteract += HandleInteract;
     }
+
     private void OnDisable()
     {
         inputHandler.OnMove -= HandleMove;
@@ -48,40 +55,82 @@ public class HubPlayer : MonoBehaviour
         inputHandler.OnFastFall -= HandleFastFall;
         inputHandler.OnInteract -= HandleInteract;
     }
-    #endregion
 
-    #region 이벤트 콜백
-    void HandleMove(Vector2 input)
+    private void Update()
     {
-        mc.Move(input.x, moveSpeed);
-
-        FlipDirectionX(input.x);
-
-        //ac.SetMoveAnim(xDirection);
+        // 땅 체크 (Gizmos로 범위 확인 가능)
+        if (groundCheckPos != null)
+            isGrounded = Physics2D.OverlapCircle(groundCheckPos.position, groundCheckRadius, groundLayer);
     }
 
-    void HandleJump()
+    private void FixedUpdate()
     {
-        mc.Jump(jumpForce);
-    }
+        // UI가 열려있으면 이동 금지
+        if (UIManager.Instance != null && UIManager.Instance.IsUIOpen)
+        {
+            mc.Stop();
+            return;
+        }
 
-    void HandleFastFall(bool isPressed)
-    {
-        if (isPressed)
+        // 이동 로직
+        if (Mathf.Abs(currentInput.x) > 0.01f)
+        {
+            mc.Move(currentInput.x, moveSpeed);
+            FlipDirectionX(currentInput.x);
+        }
+        else
+        {
+            mc.Stop(); // 키 떼면 바로 멈춤
+        }
+
+        // 빠른 하강
+        if (isDownPressed && !isGrounded)
         {
             mc.FastFall(fastFallSpeed);
         }
     }
-    void HandleInteract()
+
+    #region 이벤트 콜백
+    private void HandleMove(Vector2 input) => currentInput = input;
+
+    private void HandleJump()
     {
-        Debug.Log("Interact!");
+        // UI 열림 체크 & 땅 체크
+        if (UIManager.Instance != null && UIManager.Instance.IsUIOpen) return;
+
+        if (isGrounded)
+        {
+            mc.Jump(jumpForce);
+        }
+    }
+
+    private void HandleFastFall(bool isPressed) => isDownPressed = isPressed;
+
+    private void HandleInteract()
+    {
+        // UI 조작용
+        if (UIManager.Instance != null && UIManager.Instance.IsUIOpen)
+        {
+            UIManager.Instance.ExecuteSelectedUI();
+            return;
+        }
+        Debug.Log("Hub Interact!");
     }
     #endregion
-    
+
     void FlipDirectionX(float xDir)
     {
-        if(xDir >0) transform.localScale = new Vector3(1, 1, 1);
-        else if(xDir <0) transform.localScale = new Vector3(-1, 1, 1);
+        if (xDir > 0) transform.localScale = Vector3.one;
+        else if (xDir < 0) transform.localScale = new Vector3(-1, 1, 1);
+    }
+
+    // 에디터에서 범위 확인용
+    private void OnDrawGizmos()
+    {
+        if (groundCheckPos != null)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(groundCheckPos.position, groundCheckRadius);
+        }
     }
 }
-

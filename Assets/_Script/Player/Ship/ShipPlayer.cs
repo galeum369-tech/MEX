@@ -54,19 +54,19 @@ public class ShipPlayer : MonoBehaviour
         {
             shipData = GameManager.instance.playerData.shipData;
 
-            // [★핵심] 씬 이동 위치 처리 로직
+            // 씬 이동 위치 처리 로직
             if (GameManager.instance.isTransitioning)
             {
                 if (GameManager.instance.useRandomSpawn)
                 {
-                    if (SpawnPointManager.Instance != null)
-                        transform.position = SpawnPointManager.Instance.GetRandomSpawnPosition();
+                    transform.position = GameManager.instance.GetRandomSpawnPosition();
                     GameManager.instance.useRandomSpawn = false;
                 }
                 else
                 {
                     transform.position = GameManager.instance.targetSpawnPos;
                 }
+
                 GameManager.instance.isTransitioning = false;
                 Debug.Log($"📍 수송선 위치 설정 완료: {transform.position}");
             }
@@ -103,6 +103,9 @@ public class ShipPlayer : MonoBehaviour
 
     private void Update()
     {
+        // [UI 수정] UI 열려있으면 포탑 회전이나 발사 로직 중지
+        if (UIManager.Instance != null && UIManager.Instance.IsUIOpen) return;
+
         // 마우스 조준
         mousePos = mainCam.ScreenToWorldPoint(inputHandler.GetMousePosition());
         if (tc != null) tc.LookAt(mousePos);
@@ -117,6 +120,13 @@ public class ShipPlayer : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // [UI 수정] UI 열려있으면 물리 이동 정지
+        if (UIManager.Instance != null && UIManager.Instance.IsUIOpen)
+        {
+            rb.linearVelocity = Vector2.zero; // 멈춤
+            return;
+        }
+
         if (shipData == null) return;
 
         // 이동 물리 연산
@@ -133,11 +143,24 @@ public class ShipPlayer : MonoBehaviour
     private void HandleBoost(bool isPressed) => isBoosting = isPressed;
 
     // 공격 키 상태 (누름/뗌) 저장
-    private void HandleAttack(bool isPressed) => isFiring = isPressed;
+    private void HandleAttack(bool isPressed)
+    {
+        // [UI 수정] UI가 열려있을 때 클릭하면 공격 대신 UI 버튼 누르기
+        if (UIManager.Instance != null && UIManager.Instance.IsUIOpen)
+        {
+            if (isPressed) UIManager.Instance.ExecuteSelectedUI();
+            isFiring = false; // 발사 중지
+            return;
+        }
+        isFiring = isPressed;
+    }
 
     // 스킬 키 눌렀을 때 실행
     private void HandleSkill()
     {
+        // [UI 수정] UI 열려있으면 스킬 사용 금지
+        if (UIManager.Instance != null && UIManager.Instance.IsUIOpen) return;
+
         // 쿨타임 체크
         if (Time.time >= nextSkillTime)
         {
@@ -152,7 +175,7 @@ public class ShipPlayer : MonoBehaviour
     }
 
     // =========================================================
-    // ⚔️ 전투 로직
+    // ⚔️ [수정됨] 전투 로직 (90도 보정 추가)
     // =========================================================
 
     // 1. 기본 사격 (직선)
@@ -160,8 +183,10 @@ public class ShipPlayer : MonoBehaviour
     {
         if (bulletPrefab == null || firePoint == null) return;
 
-        Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-        // 사운드 추가 위치: AudioManager.Instance.PlaySfx("Shoot");
+        // [수정] 총알 생성 시 Z축으로 90도 돌려서 생성 (오른쪽 나가는 문제 해결)
+        Quaternion correctedRotation = firePoint.rotation * Quaternion.Euler(0, 0, 90f);
+
+        Instantiate(bulletPrefab, firePoint.position, correctedRotation);
     }
 
     // 2. 스킬 사격 (유도 미사일 난사)
@@ -169,17 +194,37 @@ public class ShipPlayer : MonoBehaviour
     {
         if (missilePrefab == null || firePoint == null) return;
 
+        // [수정] 미사일도 마찬가지로 90도 보정
+        Quaternion correctedRotation = firePoint.rotation * Quaternion.Euler(0, 0, 90f);
+
         for (int i = 0; i < missileCount; i++)
         {
-            // 미사일 생성
-            GameObject missileObj = Instantiate(missilePrefab, firePoint.position, firePoint.rotation);
+            // 약간의 랜덤 산탄 효과 (필요 없으면 제거 가능)
+            float randomSpread = Random.Range(-15f, 15f);
+            Quaternion finalRotation = correctedRotation * Quaternion.Euler(0, 0, randomSpread);
 
-            // 데미지 설정 (HomingMissile 스크립트가 붙어있어야 함)
+            GameObject missileObj = Instantiate(missilePrefab, firePoint.position, finalRotation);
+
             HomingMissile missileScript = missileObj.GetComponent<HomingMissile>();
             if (missileScript != null)
             {
                 missileScript.SetDamage(missileDamage);
             }
+        }
+    }
+
+    // 총알이 적을 맞췄을 때 호출할 함수
+    public void OnHitEnemy(float gainAmount)
+    {
+        shipData.currentSkillGauge = Mathf.Min(shipData.currentSkillGauge + gainAmount, shipData.maxSkillGauge);
+        shipData.currentRepairGauge = Mathf.Min(shipData.currentRepairGauge + gainAmount, shipData.maxRepairGauge);
+
+        if (HUDManager.Instance != null)
+        {
+            HUDManager.Instance.UpdateShipResource(
+                shipData.currentSkillGauge, shipData.maxSkillGauge,
+                shipData.currentRepairGauge, shipData.maxRepairGauge
+            );
         }
     }
 }

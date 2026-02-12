@@ -62,13 +62,13 @@ public class MechPlayer : MonoBehaviour
         {
             mechData = GameManager.instance.playerData.mechData;
 
+            // 씬 이동 위치 처리 로직
             if (GameManager.instance.isTransitioning)
             {
                 if (GameManager.instance.useRandomSpawn)
                 {
-                    if (SpawnPointManager.Instance != null)
-                        transform.position = SpawnPointManager.Instance.GetRandomSpawnPosition();
-
+                    // [수정] SpawnPointManager 삭제됨 -> GameManager 함수 호출
+                    transform.position = GameManager.instance.GetRandomSpawnPosition();
                     GameManager.instance.useRandomSpawn = false;
                 }
                 else
@@ -82,10 +82,11 @@ public class MechPlayer : MonoBehaviour
         }
         else
         {
+            // GameManager가 없을 때 (테스트용)
             mechData = new MechData();
         }
 
-        inputHandler.SetControlMode(true);
+        inputHandler.SetControlMode(true); // SideView 모드
     }
 
     private void OnEnable()
@@ -110,6 +111,15 @@ public class MechPlayer : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // [UI 수정] UI가 열려있으면 이동 로직 정지
+        if (UIManager.Instance != null && UIManager.Instance.IsUIOpen)
+        {
+            mc.Stop();
+            // 움직임 애니메이션 끄기 (선택사항)
+            ac.PlayMove(false);
+            return;
+        }
+
         CheckGround();
 
         if (!wasGrounded && isGrounded)
@@ -165,6 +175,9 @@ public class MechPlayer : MonoBehaviour
     // 점프는 W키로 할당됨
     private void HandleJump()
     {
+        // [UI 수정] UI 열려있으면 점프 불가
+        if (UIManager.Instance != null && UIManager.Instance.IsUIOpen) return;
+
         if (!isAttacking && !isPlunging && !isDodging && isGrounded)
         {
             mc.Jump(mechData.jumpPower);
@@ -175,6 +188,9 @@ public class MechPlayer : MonoBehaviour
     // [수정] 회피(Space) 핸들러: S + Space 입력 시 하단 점프 발동
     private void HandleDodge()
     {
+        // [UI 수정] UI 열려있으면 회피 불가
+        if (UIManager.Instance != null && UIManager.Instance.IsUIOpen) return;
+
         if (!canDodge || isDodging) return;
 
         // S키(isDownPressed)가 눌려있고, 플랫폼 위에 있다면 하단 점프
@@ -212,6 +228,13 @@ public class MechPlayer : MonoBehaviour
 
     private void HandleAttack()
     {
+        // [UI 수정] UI가 열려있으면 공격 대신 UI 실행
+        if (UIManager.Instance != null && UIManager.Instance.IsUIOpen)
+        {
+            UIManager.Instance.ExecuteSelectedUI();
+            return;
+        }
+
         if (isAttacking || isPlunging || isDodging) return;
         if (!isGrounded && isDownPressed) { StartPlunge(); return; }
         if (equippedHitbox == null || currentWeaponData == null) return;
@@ -252,6 +275,23 @@ public class MechPlayer : MonoBehaviour
     public void OnAttackEnd() { if (failsafeCoroutine != null) StopCoroutine(failsafeCoroutine); isAttacking = false; if (equippedHitbox != null) equippedHitbox.GetComponent<Collider2D>().enabled = false; }
 
     private void FlipSprite(float xDir) { if (xDir > 0) transform.localScale = new Vector3(1, 1, 1); else if (xDir < 0) transform.localScale = new Vector3(-1, 1, 1); }
+
+    // 적을 때렸을 때 호출할 함수
+    public void OnHitEnemy(float gainAmount)
+    {
+        // 데이터 갱신
+        mechData.currentSkillGauge = Mathf.Min(mechData.currentSkillGauge + gainAmount, mechData.maxSkillGauge);
+        mechData.currentRepairGauge = Mathf.Min(mechData.currentRepairGauge + gainAmount, mechData.maxRepairGauge);
+
+        // UI 갱신
+        if (HUDManager.Instance != null)
+        {
+            HUDManager.Instance.UpdateMechResource(
+                mechData.currentSkillGauge, mechData.maxSkillGauge,
+                mechData.currentRepairGauge, mechData.maxRepairGauge
+            );
+        }
+    }
 
     private void CheckGround()
     {

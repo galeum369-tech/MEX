@@ -17,7 +17,12 @@ public class ShipData
     [Range(1f, 50f)] public float acceleration = 5f; // 가속력 (반응성)
     public float turnSpeed = 200f;                   // 선회력
 
-    [Header("Resources")]
-    public float maxGauge = 100f;
-    public float currentGauge = 0f;
+    [Header("자원 (타격 시 회복)")]
+    // 1. 스킬 게이지 (필살기용)
+    public float maxSkillGauge = 100f;
+    public float currentSkillGauge = 0f;
+
+    // 2. 회복 게이지 (자가 수리용)
+    public float maxRepairGauge = 100f;
+    public float currentRepairGauge = 0f;
 }
